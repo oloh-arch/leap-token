@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
   <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
 
   <!-- Google Fonts & Font Awesome Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script>
@@ -22,21 +22,20 @@
         extend: {
           colors: {
             brand: {
-              50: '#f0fdf4',
-              500: '#22c55e',
-              600: '#16a34a',
-              700: '#15803d',
-              bg: '#0b0f19',
-              card: '#131b2e',
-              border: '#1e293b'
+              bg: '#080d1a',
+              card: '#0f172a',
+              cardBorder: '#1e293b',
+              accent: '#38bdf8'
             },
             solana: {
               purple: '#9945FF',
-              green: '#14F195'
+              green: '#14F195',
+              darkPurple: '#7617dc'
             }
           },
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
           }
         }
       }
@@ -45,40 +44,54 @@
 
   <style>
     body {
-      background-color: #0b0f19;
+      background-color: #080d1a;
       color: #f8fafc;
       font-family: 'Inter', sans-serif;
     }
     .gradient-text {
-      background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+      background: linear-gradient(135deg, #14F195 0%, #38bdf8 50%, #9945FF 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .glow-effect {
-      box-shadow: 0 0 25px -5px rgba(20, 241, 149, 0.15);
+    .glow-card {
+      box-shadow: 0 0 30px -10px rgba(20, 241, 149, 0.1);
+      transition: all 0.3s ease;
+    }
+    .glow-card:hover {
+      box-shadow: 0 0 35px -5px rgba(20, 241, 149, 0.18);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-solana-green selection:text-black">
 
   <!-- ================= HEADER / NAVBAR ================= -->
-  <header class="border-b border-brand-border bg-brand-card/60 backdrop-blur-md sticky top-0 z-50">
+  <header class="border-b border-brand-cardBorder bg-brand-card/80 backdrop-blur-xl sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
       
       <!-- Brand Logo -->
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-solana-purple to-solana-green flex items-center justify-center shadow-lg">
-          <i class="fa-solid font-bold fa-shield-cat text-black text-xl"></i>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-solana-purple via-sky-400 to-solana-green flex items-center justify-center shadow-lg shadow-solana-purple/20">
+          <i class="fa-solid fa-shield-cat text-black text-xl"></i>
         </div>
         <div>
           <span class="text-xl font-extrabold tracking-tight text-white">Learning Lions</span>
-          <span class="text-xs ml-2 font-mono px-2 py-0.5 rounded bg-brand-border text-solana-green font-semibold">DEVNET</span>
+          <span class="text-xs ml-2 font-mono px-2.5 py-0.5 rounded-full bg-slate-800 text-solana-green border border-solana-green/30 font-semibold">DEVNET</span>
         </div>
       </div>
 
-      <!-- Action Button -->
+      <!-- Action Buttons -->
       <div class="flex items-center space-x-4">
-        <button id="connectBtn" onclick="toggleWalletConnection()" class="flex items-center space-x-2 bg-gradient-to-r from-solana-purple to-solana-green text-black font-bold px-5 py-2.5 rounded-xl transition duration-300 hover:opacity-90 shadow-md">
+        <button id="connectBtn" onclick="toggleWalletConnection()" class="flex items-center space-x-2 bg-gradient-to-r from-solana-purple to-solana-green text-black font-bold px-5 py-2.5 rounded-xl transition duration-300 hover:opacity-90 shadow-lg shadow-solana-purple/20 active:scale-95">
           <i class="fa-solid fa-wallet"></i>
           <span id="btnText">Connect Phantom</span>
         </button>
@@ -90,29 +103,50 @@
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
     
     <!-- Hero Section -->
-    <div class="text-center max-w-3xl mx-auto mb-16">
-      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-slate-300 mb-6">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-xs text-slate-300 mb-6">
         <span class="w-2 h-2 rounded-full bg-solana-green animate-pulse"></span>
-        <span>Solana Devnet Token Ecosystem</span>
+        <span>Official Solana Devnet Reward Token</span>
       </div>
       
-      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6">
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
         Empowering Trainees with <span class="gradient-text">$LEAP Token</span>
       </h1>
       
-      <p class="text-slate-400 text-lg sm:text-xl leading-relaxed mb-8">
-        The official reward and credential token for Learning Lions developers. Earn $LEAP by completing modules, submitting code, and contributing to open-source projects.
+      <p class="text-slate-400 text-base sm:text-lg leading-relaxed mb-8">
+        The Web3 credential and incentive system for Learning Lions. Complete skill modules in coding, graphic design, and Web3 development to earn verifiable $LEAP rewards directly to your Solana wallet.
       </p>
 
       <!-- Token Address Badge -->
-      <div class="bg-brand-card border border-brand-border rounded-xl p-3 inline-flex flex-wrap items-center justify-center gap-3 max-w-full">
-        <span class="text-xs uppercase text-slate-400 font-bold tracking-wider">Contract Address:</span>
+      <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-3.5 inline-flex flex-wrap items-center justify-center gap-3 max-w-full shadow-md">
+        <span class="text-xs uppercase text-slate-400 font-bold tracking-wider">Devnet Mint Address:</span>
         <code id="tokenAddress" class="text-xs sm:text-sm font-mono text-solana-green truncate max-w-xs sm:max-w-md">
           LEAP7xQ9v3Kz4Y8mM2pL1N6wR5tJ8hF3gD2sS1aB9cE
         </code>
-        <button onclick="copyContractAddress()" class="text-slate-400 hover:text-white transition px-2 py-1 rounded hover:bg-slate-800">
+        <button onclick="copyContractAddress()" class="text-slate-400 hover:text-white transition px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold flex items-center space-x-1">
           <i id="copyIcon" class="fa-regular fa-copy"></i>
+          <span id="copyText">Copy</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Token Stats Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 text-center">
+        <p class="text-xs text-slate-400 font-medium">Total Supply</p>
+        <p class="text-lg font-bold text-white mt-1">1,000,000 <span class="text-xs text-solana-green">$LEAP</span></p>
+      </div>
+      <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 text-center">
+        <p class="text-xs text-slate-400 font-medium">Blockchain Network</p>
+        <p class="text-lg font-bold text-white mt-1">Solana Devnet</p>
+      </div>
+      <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 text-center">
+        <p class="text-xs text-slate-400 font-medium">Token Standard</p>
+        <p class="text-lg font-bold text-white mt-1">SPL Token</p>
+      </div>
+      <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 text-center">
+        <p class="text-xs text-slate-400 font-medium">Decimals</p>
+        <p class="text-lg font-bold text-white mt-1">9</p>
       </div>
     </div>
 
@@ -120,27 +154,29 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       
       <!-- Wallet Info Card -->
-      <div class="bg-brand-card border border-brand-border rounded-2xl p-6 glow-effect flex flex-col justify-between">
+      <div class="bg-brand-card border border-brand-cardBorder rounded-2xl p-6 glow-card flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-white">Wallet Connection</h3>
-            <i class="fa-solid fa-user-gear text-solana-purple"></i>
+          <div class="flex items-center justify-between mb-4 border-b border-brand-cardBorder pb-3">
+            <h3 class="text-lg font-bold text-white flex items-center">
+              <i class="fa-solid fa-wallet text-solana-purple mr-2"></i> Wallet Status
+            </h3>
+            <span id="statusBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">Disconnected</span>
           </div>
           
-          <div id="walletDetails" class="space-y-4">
+          <div id="walletDetails" class="space-y-4 text-sm">
             <div>
-              <p class="text-xs text-slate-400 font-medium">Status</p>
-              <p id="connectionStatus" class="text-sm font-semibold text-rose-400">Disconnected</p>
-            </div>
-            
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Public Key</p>
-              <p id="pubKeyDisplay" class="text-sm font-mono text-slate-300 truncate">--</p>
+              <p class="text-xs text-slate-400 font-medium mb-1">Public Key Address</p>
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800">
+                <p id="pubKeyDisplay" class="font-mono text-xs text-slate-300 truncate">--</p>
+              </div>
             </div>
 
             <div>
-              <p class="text-xs text-slate-400 font-medium">SOL Gas Balance</p>
-              <p id="solBalance" class="text-sm font-mono text-solana-green">0.00 SOL</p>
+              <p class="text-xs text-slate-400 font-medium mb-1">Solana Network Fee Balance</p>
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800 flex justify-between items-center">
+                <span id="solBalance" class="font-mono text-sm font-semibold text-solana-green">0.000 SOL</span>
+                <span class="text-xs text-slate-500 font-mono">Devnet</span>
+              </div>
             </div>
           </div>
         </div>
@@ -151,57 +187,60 @@
       </div>
 
       <!-- Token Balance Card -->
-      <div class="bg-brand-card border border-brand-border rounded-2xl p-6 glow-effect flex flex-col justify-between">
+      <div class="bg-brand-card border border-brand-cardBorder rounded-2xl p-6 glow-card flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-white">$LEAP Holdings</h3>
-            <i class="fa-solid fa-coins text-solana-green"></i>
+          <div class="flex items-center justify-between mb-4 border-b border-brand-cardBorder pb-3">
+            <h3 class="text-lg font-bold text-white flex items-center">
+              <i class="fa-solid fa-coins text-solana-green mr-2"></i> Trainee Holdings
+            </h3>
+            <span class="text-xs font-mono text-slate-400">SPL-20</span>
           </div>
           
           <div class="space-y-4">
-            <div>
-              <p class="text-xs text-slate-400 font-medium">Token Standard</p>
-              <p class="text-sm font-semibold text-white">Solana SPL Token</p>
-            </div>
-
             <div class="pt-2">
-              <p class="text-xs text-slate-400 font-medium">Your Trainee Balance</p>
-              <div class="flex items-baseline space-x-2">
-                <span id="leapBalance" class="text-4xl font-extrabold text-white">0</span>
-                <span class="text-solana-green font-bold text-lg">$LEAP</span>
+              <p class="text-xs text-slate-400 font-medium">Your $LEAP Token Balance</p>
+              <div class="flex items-baseline space-x-2 mt-2">
+                <span id="leapBalance" class="text-5xl font-extrabold text-white tracking-tight">0</span>
+                <span class="text-solana-green font-bold text-xl">$LEAP</span>
               </div>
             </div>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Tokens earned can be used inside the Learning Lions ecosystem for advanced certification tracks.
+            </p>
           </div>
         </div>
 
-        <button onclick="refreshBalance()" class="mt-6 w-full py-2.5 rounded-xl border border-brand-border bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition">
-          <i class="fa-solid fa-arrows-rotate mr-2"></i>Refresh Balance
+        <button onclick="refreshBalance()" class="mt-6 w-full py-2.5 rounded-xl border border-brand-cardBorder bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition active:scale-95 flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Sync Devnet Balance</span>
         </button>
       </div>
 
       <!-- Trainee Claim Portal Card -->
-      <div class="bg-brand-card border border-brand-border rounded-2xl p-6 glow-effect flex flex-col justify-between">
+      <div class="bg-brand-card border border-brand-cardBorder rounded-2xl p-6 glow-card flex flex-col justify-between">
         <div>
-          <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-white">Module Rewards</h3>
-            <i class="fa-solid fa-graduation-cap text-solana-purple"></i>
+          <div class="flex items-center justify-between mb-4 border-b border-brand-cardBorder pb-3">
+            <h3 class="text-lg font-bold text-white flex items-center">
+              <i class="fa-solid fa-graduation-cap text-sky-400 mr-2"></i> Module Rewards
+            </h3>
+            <span class="text-xs font-mono text-solana-green">Simulator</span>
           </div>
 
           <p class="text-xs text-slate-400 mb-4 leading-relaxed">
-            Simulate claiming module completion rewards on Solana Devnet.
+            Select a completed training track to claim your corresponding $LEAP tokens.
           </p>
 
           <div class="space-y-3">
-            <label class="block text-xs text-slate-400 font-medium">Select Completed Module</label>
-            <select id="moduleSelect" class="w-full bg-slate-900 border border-brand-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-solana-green">
-              <option value="100">Solana Fundamentals (+100 LEAP)</option>
-              <option value="250">Smart Contract Development (+250 LEAP)</option>
-              <option value="500">Full-Stack Web3 DApp (+500 LEAP)</option>
+            <label class="block text-xs text-slate-400 font-medium">Completed Training Module</label>
+            <select id="moduleSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-solana-green transition">
+              <option value="100">Web Development Basics (+100 LEAP)</option>
+              <option value="250">Graphic Design & UI/UX (+250 LEAP)</option>
+              <option value="500">Solana Web3 Smart Contracts (+500 LEAP)</option>
             </select>
           </div>
         </div>
 
-        <button id="claimBtn" onclick="claimReward()" class="mt-6 w-full py-3 rounded-xl bg-solana-purple hover:bg-purple-700 text-white font-bold text-sm transition shadow-lg flex items-center justify-center space-x-2">
+        <button id="claimBtn" onclick="claimReward()" class="mt-6 w-full py-3 rounded-xl bg-gradient-to-r from-solana-purple to-solana-darkPurple hover:opacity-90 text-white font-bold text-sm transition shadow-lg shadow-solana-purple/20 flex items-center justify-center space-x-2 active:scale-95">
           <i class="fa-solid fa-gift"></i>
           <span>Claim $LEAP Reward</span>
         </button>
@@ -209,40 +248,47 @@
 
     </div>
 
-    <!-- Notification Console -->
-    <div class="mt-10 bg-brand-card border border-brand-border rounded-2xl p-6">
-      <h4 class="text-sm font-bold text-slate-300 mb-3 flex items-center">
-        <i class="fa-solid fa-terminal text-solana-green mr-2"></i> Transaction & System Console
-      </h4>
-      <div id="consoleLog" class="bg-black/60 rounded-xl p-4 font-mono text-xs text-slate-400 h-28 overflow-y-auto space-y-1 border border-slate-800/80">
-        <div>> System initialized. Ready to connect to Solana Devnet via Phantom.</div>
+    <!-- Live System Console -->
+    <div class="mt-10 bg-brand-card border border-brand-cardBorder rounded-2xl p-6">
+      <div class="flex items-center justify-between mb-3">
+        <h4 class="text-sm font-bold text-slate-300 flex items-center">
+          <i class="fa-solid fa-terminal text-solana-green mr-2"></i> Live Console Output Log
+        </h4>
+        <button onclick="clearConsole()" class="text-xs text-slate-500 hover:text-slate-300 transition">Clear Console</button>
+      </div>
+      <div id="consoleLog" class="bg-slate-950 rounded-xl p-4 font-mono text-xs text-slate-400 h-36 overflow-y-auto space-y-1 border border-slate-800/80 custom-scrollbar">
+        <div><span class="text-slate-500">[System]</span> > System initialized. Ready to connect to Solana Devnet via Phantom Wallet.</div>
       </div>
     </div>
 
   </main>
 
   <!-- ================= FOOTER ================= -->
-  <footer class="border-t border-brand-border bg-brand-card/40 py-6 text-center text-xs text-slate-500">
+  <footer class="border-t border-brand-cardBorder bg-brand-card/40 py-6 text-center text-xs text-slate-500">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>© 2026 Learning Lions Ecosystem. Open-source zero-cost training project.</p>
+      <p>© 2026 Learning Lions Ecosystem. Open-source training initiative.</p>
       <div class="flex space-x-6">
-        <a href="https://github.com" target="_blank" class="hover:text-slate-300">GitHub Repository</a>
-        <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" class="hover:text-slate-300">Solana Devnet Explorer</a>
+        <a href="https://github.com" target="_blank" class="hover:text-slate-300 transition">GitHub Repository</a>
+        <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" class="hover:text-slate-300 transition">Solana Devnet Explorer</a>
       </div>
     </div>
   </footer>
 
-  <!-- ================= WE3 SCRIPT LOGIC ================= -->
+  <!-- ================= WEB3 SCRIPT LOGIC ================= -->
   <script>
     let walletPublicKey = null;
     let localLeapBalance = 0;
-    const devnetConnection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'), 'confirmed');
+    
+    // Initialize Solana Devnet RPC Connection
+    const devnetConnection = new solanaWeb3.Connection(
+      solanaWeb3.clusterApiUrl('devnet'), 
+      'confirmed'
+    );
 
-    // Utility: Copy Contract Address
+    // Utility: Copy Contract Address to Clipboard
     function copyContractAddress() {
       const addressText = document.getElementById('tokenAddress').innerText.trim();
       
-      // Fallback copy execution for browser compatibility
       const tempInput = document.createElement('input');
       tempInput.value = addressText;
       document.body.appendChild(tempInput);
@@ -251,15 +297,19 @@
       document.body.removeChild(tempInput);
 
       const copyIcon = document.getElementById('copyIcon');
+      const copyText = document.getElementById('copyText');
       copyIcon.className = 'fa-solid fa-check text-solana-green';
-      logMessage(`Contract address copied to clipboard: ${addressText}`);
+      copyText.innerText = 'Copied!';
+      
+      logMessage(`Contract address copied: ${addressText}`, 'success');
 
       setTimeout(() => {
         copyIcon.className = 'fa-regular fa-copy';
+        copyText.innerText = 'Copy';
       }, 2000);
     }
 
-    // Logger
+    // Console Event Logger
     function logMessage(msg, type = 'info') {
       const consoleLog = document.getElementById('consoleLog');
       const time = new Date().toLocaleTimeString();
@@ -268,11 +318,15 @@
       if (type === 'error') colorClass = 'text-rose-400';
       if (type === 'warn') colorClass = 'text-amber-300';
 
-      consoleLog.innerHTML += `<div class="${colorClass}">[${time}] > ${msg}</div>`;
+      consoleLog.innerHTML += `<div class="${colorClass}"><span class="text-slate-600">[${time}]</span> > ${msg}</div>`;
       consoleLog.scrollTop = consoleLog.scrollHeight;
     }
 
-    // Check if Phantom is installed
+    function clearConsole() {
+      document.getElementById('consoleLog').innerHTML = `<div><span class="text-slate-500">[System]</span> > Console cleared.</div>`;
+    }
+
+    // Check Phantom Extension Availability
     function getProvider() {
       if ('solana' in window) {
         const provider = window.solana;
@@ -295,17 +349,17 @@
       }
 
       if (walletPublicKey) {
-        // Disconnect
+        // Disconnect logic
         try {
           await provider.disconnect();
           walletPublicKey = null;
           updateUIOnDisconnect();
           logMessage('Wallet disconnected.', 'info');
         } catch (err) {
-          logMessage(`Error disconnecting: ${err.message}`, 'error');
+          logMessage(`Error disconnecting wallet: ${err.message}`, 'error');
         }
       } else {
-        // Connect
+        // Connect logic
         try {
           logMessage('Requesting connection to Phantom Wallet...', 'warn');
           const resp = await provider.connect();
@@ -313,62 +367,75 @@
           updateUIOnConnect(walletPublicKey);
           logMessage(`Connected to wallet: ${walletPublicKey}`, 'success');
           
-          // Fetch Real SOL Balance from Devnet
+          // Fetch Real SOL Balance safely
           fetchSolBalance(resp.publicKey);
         } catch (err) {
-          logMessage(`Connection rejected: ${err.message}`, 'error');
+          logMessage(`Connection request rejected: ${err.message}`, 'error');
         }
       }
     }
 
-    // Fetch SOL Balance
+    // CRITICAL BUGFIX: Safely fetch & convert BigInt SOL Balance
     async function fetchSolBalance(publicKeyObj) {
       try {
         logMessage('Fetching SOL balance from Solana Devnet...', 'info');
+        
+        // Returns balance in lamports (BigInt or Number depending on Web3 version)
         const balanceLamports = await devnetConnection.getBalance(publicKeyObj);
-        const solVal = (balanceLamports / solanaWeb3.LAMPORTS_PER_SOL).toFixed(3);
+        
+        // Safely cast BigInt to Number before division by 1,000,000,000 (1e9)
+        const solVal = (Number(balanceLamports) / 1000000000).toFixed(4);
+        
         document.getElementById('solBalance').innerText = `${solVal} SOL`;
-        logMessage(`Fetched Balance: ${solVal} SOL`, 'success');
+        logMessage(`Devnet SOL Balance updated: ${solVal} SOL`, 'success');
       } catch (err) {
+        console.error("Balance fetch error:", err);
         logMessage(`Failed to fetch SOL balance: ${err.message}`, 'error');
-        document.getElementById('solBalance').innerText = `Devnet Sync Issue`;
+        document.getElementById('solBalance').innerText = `Sync Error`;
       }
     }
 
-    // Update UI on Connection
+    // Update UI Elements on Connection
     function updateUIOnConnect(pubKey) {
-      document.getElementById('btnText').innerText = `${pubKey.substring(0, 4)}...${pubKey.substring(pubKey.length - 4)}`;
-      document.getElementById('connectionStatus').innerText = 'Connected (Devnet)';
-      document.getElementById('connectionStatus').className = 'text-sm font-semibold text-solana-green';
+      const truncatedKey = `${pubKey.substring(0, 4)}...${pubKey.substring(pubKey.length - 4)}`;
+      document.getElementById('btnText').innerText = truncatedKey;
+      
+      const badge = document.getElementById('statusBadge');
+      badge.innerText = 'Connected';
+      badge.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-solana-green/10 text-solana-green border border-solana-green/20';
+      
       document.getElementById('pubKeyDisplay').innerText = pubKey;
       document.getElementById('installNotice').classList.add('hidden');
     }
 
-    // Update UI on Disconnect
+    // Update UI Elements on Disconnect
     function updateUIOnDisconnect() {
       document.getElementById('btnText').innerText = 'Connect Phantom';
-      document.getElementById('connectionStatus').innerText = 'Disconnected';
-      document.getElementById('connectionStatus').className = 'text-sm font-semibold text-rose-400';
+      
+      const badge = document.getElementById('statusBadge');
+      badge.innerText = 'Disconnected';
+      badge.className = 'text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20';
+      
       document.getElementById('pubKeyDisplay').innerText = '--';
-      document.getElementById('solBalance').innerText = '0.00 SOL';
+      document.getElementById('solBalance').innerText = '0.000 SOL';
       document.getElementById('leapBalance').innerText = '0';
       localLeapBalance = 0;
     }
 
-    // Refresh Local Balance Action
+    // Manual Refresh Action
     function refreshBalance() {
       if (!walletPublicKey) {
         logMessage('Please connect your Phantom Wallet first.', 'warn');
         return;
       }
       fetchSolBalance(new solanaWeb3.PublicKey(walletPublicKey));
-      logMessage(`Refreshed $LEAP Token Balance: ${localLeapBalance} LEAP`, 'success');
+      logMessage(`Refreshed current $LEAP token balance: ${localLeapBalance} LEAP`, 'info');
     }
 
-    // Simulate Claiming Reward
+    // Reward Claiming Logic
     function claimReward() {
       if (!walletPublicKey) {
-        logMessage('Please connect your Phantom Wallet to receive tokens.', 'warn');
+        logMessage('Please connect your Phantom Wallet to claim rewards.', 'warn');
         alert('Please connect your Phantom Wallet first!');
         return;
       }
@@ -377,10 +444,11 @@
       localLeapBalance += rewardAmount;
       document.getElementById('leapBalance').innerText = localLeapBalance;
 
-      logMessage(`Transaction Executed! Claimed ${rewardAmount} $LEAP tokens on Devnet.`, 'success');
+      logMessage(`Claimed ${rewardAmount} $LEAP tokens for module completion!`, 'success');
+      logMessage(`New wallet balance: ${localLeapBalance} $LEAP`, 'info');
     }
 
-    // Auto-detect wallet listeners on load
+    // Auto-listen to Provider events
     window.addEventListener('load', () => {
       const provider = getProvider();
       if (provider) {
