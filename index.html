@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning Lions ($LEAP) - Solana Devnet Ecosystem</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Solana Web3 JS SDK -->
+  <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              bg: '#0b0f19',
+              card: '#131b2e',
+              border: '#1e293b'
+            },
+            solana: {
+              purple: '#9945FF',
+              green: '#14F195'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: 'Inter', sans-serif;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .glow-effect {
+      box-shadow: 0 0 25px -5px rgba(20, 241, 149, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-solana-green selection:text-black">
+
+  <!-- ================= HEADER / NAVBAR ================= -->
+  <header class="border-b border-brand-border bg-brand-card/60 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-solana-purple to-solana-green flex items-center justify-center shadow-lg">
+          <i class="fa-solid font-bold fa-shield-cat text-black text-xl"></i>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight text-white">Learning Lions</span>
+          <span class="text-xs ml-2 font-mono px-2 py-0.5 rounded bg-brand-border text-solana-green font-semibold">DEVNET</span>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="flex items-center space-x-4">
+        <button id="connectBtn" onclick="toggleWalletConnection()" class="flex items-center space-x-2 bg-gradient-to-r from-solana-purple to-solana-green text-black font-bold px-5 py-2.5 rounded-xl transition duration-300 hover:opacity-90 shadow-md">
+          <i class="fa-solid fa-wallet"></i>
+          <span id="btnText">Connect Phantom</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow w-full">
+    
+    <!-- Hero Section -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-slate-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-solana-green animate-pulse"></span>
+        <span>Solana Devnet Token Ecosystem</span>
+      </div>
+      
+      <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6">
+        Empowering Trainees with <span class="gradient-text">$LEAP Token</span>
+      </h1>
+      
+      <p class="text-slate-400 text-lg sm:text-xl leading-relaxed mb-8">
+        The official reward and credential token for Learning Lions developers. Earn $LEAP by completing modules, submitting code, and contributing to open-source projects.
+      </p>
+
+      <!-- Token Address Badge -->
+      <div class="bg-brand-card border border-brand-border rounded-xl p-3 inline-flex flex-wrap items-center justify-center gap-3 max-w-full">
+        <span class="text-xs uppercase text-slate-400 font-bold tracking-wider">Contract Address:</span>
+        <code id="tokenAddress" class="text-xs sm:text-sm font-mono text-solana-green truncate max-w-xs sm:max-w-md">
+          LEAP7xQ9v3Kz4Y8mM2pL1N6wR5tJ8hF3gD2sS1aB9cE
+        </code>
+        <button onclick="copyContractAddress()" class="text-slate-400 hover:text-white transition px-2 py-1 rounded hover:bg-slate-800">
+          <i id="copyIcon" class="fa-regular fa-copy"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Wallet Info Card -->
+      <div class="bg-brand-card border border-brand-border rounded-2xl p-6 glow-effect flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">Wallet Connection</h3>
+            <i class="fa-solid fa-user-gear text-solana-purple"></i>
+          </div>
+          
+          <div id="walletDetails" class="space-y-4">
+            <div>
+              <p class="text-xs text-slate-400 font-medium">Status</p>
+              <p id="connectionStatus" class="text-sm font-semibold text-rose-400">Disconnected</p>
+            </div>
+            
+            <div>
+              <p class="text-xs text-slate-400 font-medium">Public Key</p>
+              <p id="pubKeyDisplay" class="text-sm font-mono text-slate-300 truncate">--</p>
+            </div>
+
+            <div>
+              <p class="text-xs text-slate-400 font-medium">SOL Gas Balance</p>
+              <p id="solBalance" class="text-sm font-mono text-solana-green">0.00 SOL</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="installNotice" class="hidden mt-4 p-3 bg-amber-950/40 border border-amber-800/50 rounded-xl text-xs text-amber-200">
+          Phantom wallet not detected. <a href="https://phantom.app/" target="_blank" class="underline font-bold">Install extension</a>
+        </div>
+      </div>
+
+      <!-- Token Balance Card -->
+      <div class="bg-brand-card border border-brand-border rounded-2xl p-6 glow-effect flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">$LEAP Holdings</h3>
+            <i class="fa-solid fa-coins text-solana-green"></i>
+          </div>
+          
+          <div class="space-y-4">
+            <div>
+              <p class="text-xs text-slate-400 font-medium">Token Standard</p>
+              <p class="text-sm font-semibold text-white">Solana SPL Token</p>
+            </div>
+
+            <div class="pt-2">
+              <p class="text-xs text-slate-400 font-medium">Your Trainee Balance</p>
+              <div class="flex items-baseline space-x-2">
+                <span id="leapBalance" class="text-4xl font-extrabold text-white">0</span>
+                <span class="text-solana-green font-bold text-lg">$LEAP</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="refreshBalance()" class="mt-6 w-full py-2.5 rounded-xl border border-brand-border bg-slate-800/60 hover:bg-slate-800 text-slate-300 text-sm font-semibold transition">
+          <i class="fa-solid fa-arrows-rotate mr-2"></i>Refresh Balance
+        </button>
+      </div>
+
+      <!-- Trainee Claim Portal Card -->
+      <div class="bg-brand-card border border-brand-border rounded-2xl p-6 glow-effect flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-bold text-white">Module Rewards</h3>
+            <i class="fa-solid fa-graduation-cap text-solana-purple"></i>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+            Simulate claiming module completion rewards on Solana Devnet.
+          </p>
+
+          <div class="space-y-3">
+            <label class="block text-xs text-slate-400 font-medium">Select Completed Module</label>
+            <select id="moduleSelect" class="w-full bg-slate-900 border border-brand-border rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-solana-green">
+              <option value="100">Solana Fundamentals (+100 LEAP)</option>
+              <option value="250">Smart Contract Development (+250 LEAP)</option>
+              <option value="500">Full-Stack Web3 DApp (+500 LEAP)</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="claimBtn" onclick="claimReward()" class="mt-6 w-full py-3 rounded-xl bg-solana-purple hover:bg-purple-700 text-white font-bold text-sm transition shadow-lg flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-gift"></i>
+          <span>Claim $LEAP Reward</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Notification Console -->
+    <div class="mt-10 bg-brand-card border border-brand-border rounded-2xl p-6">
+      <h4 class="text-sm font-bold text-slate-300 mb-3 flex items-center">
+        <i class="fa-solid fa-terminal text-solana-green mr-2"></i> Transaction & System Console
+      </h4>
+      <div id="consoleLog" class="bg-black/60 rounded-xl p-4 font-mono text-xs text-slate-400 h-28 overflow-y-auto space-y-1 border border-slate-800/80">
+        <div>> System initialized. Ready to connect to Solana Devnet via Phantom.</div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-brand-border bg-brand-card/40 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 Learning Lions Ecosystem. Open-source zero-cost training project.</p>
+      <div class="flex space-x-6">
+        <a href="https://github.com" target="_blank" class="hover:text-slate-300">GitHub Repository</a>
+        <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" class="hover:text-slate-300">Solana Devnet Explorer</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= WE3 SCRIPT LOGIC ================= -->
+  <script>
+    let walletPublicKey = null;
+    let localLeapBalance = 0;
+    const devnetConnection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('devnet'), 'confirmed');
+
+    // Utility: Copy Contract Address
+    function copyContractAddress() {
+      const addressText = document.getElementById('tokenAddress').innerText.trim();
+      
+      // Fallback copy execution for browser compatibility
+      const tempInput = document.createElement('input');
+      tempInput.value = addressText;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+
+      const copyIcon = document.getElementById('copyIcon');
+      copyIcon.className = 'fa-solid fa-check text-solana-green';
+      logMessage(`Contract address copied to clipboard: ${addressText}`);
+
+      setTimeout(() => {
+        copyIcon.className = 'fa-regular fa-copy';
+      }, 2000);
+    }
+
+    // Logger
+    function logMessage(msg, type = 'info') {
+      const consoleLog = document.getElementById('consoleLog');
+      const time = new Date().toLocaleTimeString();
+      let colorClass = 'text-slate-400';
+      if (type === 'success') colorClass = 'text-solana-green';
+      if (type === 'error') colorClass = 'text-rose-400';
+      if (type === 'warn') colorClass = 'text-amber-300';
+
+      consoleLog.innerHTML += `<div class="${colorClass}">[${time}] > ${msg}</div>`;
+      consoleLog.scrollTop = consoleLog.scrollHeight;
+    }
+
+    // Check if Phantom is installed
+    function getProvider() {
+      if ('solana' in window) {
+        const provider = window.solana;
+        if (provider.isPhantom) {
+          return provider;
+        }
+      }
+      return null;
+    }
+
+    // Toggle Connect / Disconnect Wallet
+    async function toggleWalletConnection() {
+      const provider = getProvider();
+
+      if (!provider) {
+        document.getElementById('installNotice').classList.remove('hidden');
+        logMessage('Phantom wallet extension not found! Please install it from phantom.app', 'error');
+        window.open('https://phantom.app/', '_blank');
+        return;
+      }
+
+      if (walletPublicKey) {
+        // Disconnect
+        try {
+          await provider.disconnect();
+          walletPublicKey = null;
+          updateUIOnDisconnect();
+          logMessage('Wallet disconnected.', 'info');
+        } catch (err) {
+          logMessage(`Error disconnecting: ${err.message}`, 'error');
+        }
+      } else {
+        // Connect
+        try {
+          logMessage('Requesting connection to Phantom Wallet...', 'warn');
+          const resp = await provider.connect();
+          walletPublicKey = resp.publicKey.toString();
+          updateUIOnConnect(walletPublicKey);
+          logMessage(`Connected to wallet: ${walletPublicKey}`, 'success');
+          
+          // Fetch Real SOL Balance from Devnet
+          fetchSolBalance(resp.publicKey);
+        } catch (err) {
+          logMessage(`Connection rejected: ${err.message}`, 'error');
+        }
+      }
+    }
+
+    // Fetch SOL Balance
+    async function fetchSolBalance(publicKeyObj) {
+      try {
+        logMessage('Fetching SOL balance from Solana Devnet...', 'info');
+        const balanceLamports = await devnetConnection.getBalance(publicKeyObj);
+        const solVal = (balanceLamports / solanaWeb3.LAMPORTS_PER_SOL).toFixed(3);
+        document.getElementById('solBalance').innerText = `${solVal} SOL`;
+        logMessage(`Fetched Balance: ${solVal} SOL`, 'success');
+      } catch (err) {
+        logMessage(`Failed to fetch SOL balance: ${err.message}`, 'error');
+        document.getElementById('solBalance').innerText = `Devnet Sync Issue`;
+      }
+    }
+
+    // Update UI on Connection
+    function updateUIOnConnect(pubKey) {
+      document.getElementById('btnText').innerText = `${pubKey.substring(0, 4)}...${pubKey.substring(pubKey.length - 4)}`;
+      document.getElementById('connectionStatus').innerText = 'Connected (Devnet)';
+      document.getElementById('connectionStatus').className = 'text-sm font-semibold text-solana-green';
+      document.getElementById('pubKeyDisplay').innerText = pubKey;
+      document.getElementById('installNotice').classList.add('hidden');
+    }
+
+    // Update UI on Disconnect
+    function updateUIOnDisconnect() {
+      document.getElementById('btnText').innerText = 'Connect Phantom';
+      document.getElementById('connectionStatus').innerText = 'Disconnected';
+      document.getElementById('connectionStatus').className = 'text-sm font-semibold text-rose-400';
+      document.getElementById('pubKeyDisplay').innerText = '--';
+      document.getElementById('solBalance').innerText = '0.00 SOL';
+      document.getElementById('leapBalance').innerText = '0';
+      localLeapBalance = 0;
+    }
+
+    // Refresh Local Balance Action
+    function refreshBalance() {
+      if (!walletPublicKey) {
+        logMessage('Please connect your Phantom Wallet first.', 'warn');
+        return;
+      }
+      fetchSolBalance(new solanaWeb3.PublicKey(walletPublicKey));
+      logMessage(`Refreshed $LEAP Token Balance: ${localLeapBalance} LEAP`, 'success');
+    }
+
+    // Simulate Claiming Reward
+    function claimReward() {
+      if (!walletPublicKey) {
+        logMessage('Please connect your Phantom Wallet to receive tokens.', 'warn');
+        alert('Please connect your Phantom Wallet first!');
+        return;
+      }
+
+      const rewardAmount = parseInt(document.getElementById('moduleSelect').value);
+      localLeapBalance += rewardAmount;
+      document.getElementById('leapBalance').innerText = localLeapBalance;
+
+      logMessage(`Transaction Executed! Claimed ${rewardAmount} $LEAP tokens on Devnet.`, 'success');
+    }
+
+    // Auto-detect wallet listeners on load
+    window.addEventListener('load', () => {
+      const provider = getProvider();
+      if (provider) {
+        provider.on('connect', (publicKey) => {
+          walletPublicKey = publicKey.toString();
+          updateUIOnConnect(walletPublicKey);
+        });
+        provider.on('disconnect', () => {
+          updateUIOnDisconnect();
+        });
+      }
+    });
+  </script>
+</body>
+</html>
