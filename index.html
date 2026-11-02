@@ -121,7 +121,7 @@
       <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-3.5 inline-flex flex-wrap items-center justify-center gap-3 max-w-full shadow-md">
         <span class="text-xs uppercase text-slate-400 font-bold tracking-wider">Devnet Mint Address:</span>
         <code id="tokenAddress" class="text-xs sm:text-sm font-mono text-solana-green truncate max-w-xs sm:max-w-md">
-          LEAP7xQ9v3Kz4Y8mM2pL1N6wR5tJ8hF3gD2sS1aB9cE
+          4s9F87xmSrqus4V2aNyNQa6GwXGYNSwnCcGtBtA1fNGa
         </code>
         <button onclick="copyContractAddress()" class="text-slate-400 hover:text-white transition px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs font-semibold flex items-center space-x-1">
           <i id="copyIcon" class="fa-regular fa-copy"></i>
@@ -134,7 +134,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
       <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 text-center">
         <p class="text-xs text-slate-400 font-medium">Total Supply</p>
-        <p class="text-lg font-bold text-white mt-1">1,000,000 <span class="text-xs text-solana-green">$LEAP</span></p>
+        <p class="text-lg font-bold text-white mt-1">1,000,000,000 <span class="text-xs text-solana-green">$LEAP</span></p>
       </div>
       <div class="bg-brand-card border border-brand-cardBorder rounded-xl p-4 text-center">
         <p class="text-xs text-slate-400 font-medium">Blockchain Network</p>
@@ -151,7 +151,7 @@
     </div>
 
     <!-- Dashboard Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
       
       <!-- Wallet Info Card -->
       <div class="bg-brand-card border border-brand-cardBorder rounded-2xl p-6 glow-card flex flex-col justify-between">
@@ -233,9 +233,9 @@
           <div class="space-y-3">
             <label class="block text-xs text-slate-400 font-medium">Completed Training Module</label>
             <select id="moduleSelect" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-solana-green transition">
-              <option value="100">Web Development Basics (+100 LEAP)</option>
-              <option value="250">Graphic Design & UI/UX (+250 LEAP)</option>
-              <option value="500">Solana Web3 Smart Contracts (+500 LEAP)</option>
+              <option value="100">Web3 Fundamentals (+100 LEAP)</option>
+              <option value="250">Smart Contracts 101 (+250 LEAP)</option>
+              <option value="500">Decentralized Apps & dApps (+500 LEAP)</option>
             </select>
           </div>
         </div>
@@ -248,8 +248,37 @@
 
     </div>
 
+    <!-- Admin Panel (Role Detection - Visible only to Admin Wallet) -->
+    <div id="adminPanel" class="hidden mb-10 bg-gradient-to-r from-purple-950/40 via-slate-900 to-slate-900 border border-solana-purple/50 rounded-2xl p-6 shadow-xl">
+      <div class="flex items-center justify-between mb-4 border-b border-purple-800/40 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center">
+          <i class="fa-solid fa-user-shield text-solana-purple mr-2"></i> Admin Token Allocation Panel
+        </h3>
+        <span class="text-xs font-mono font-bold px-3 py-1 rounded-full bg-solana-purple/20 text-purple-300 border border-solana-purple/40">AUTHORIZED ADMIN</span>
+      </div>
+      <p class="text-xs text-slate-300 mb-4">
+        Directly send $LEAP tokens from the official treasury pool to a trainee's Solana Devnet wallet.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2">
+          <label class="block text-xs text-slate-400 font-medium mb-1">Trainee Wallet Address</label>
+          <input type="text" id="traineeAddressInput" placeholder="Paste Trainee Solana Devnet Address..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-solana-green">
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 font-medium mb-1">Amount ($LEAP)</label>
+          <input type="number" id="transferAmountInput" placeholder="250" value="250" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white font-mono focus:outline-none focus:border-solana-green">
+        </div>
+      </div>
+
+      <button onclick="adminTransferTokens()" class="mt-4 px-6 py-2.5 rounded-xl bg-solana-purple hover:bg-solana-darkPurple text-white font-bold text-xs transition shadow-md flex items-center space-x-2">
+        <i class="fa-solid fa-paper-plane"></i>
+        <span>Execute Token Push Transfer</span>
+      </button>
+    </div>
+
     <!-- Live System Console -->
-    <div class="mt-10 bg-brand-card border border-brand-cardBorder rounded-2xl p-6">
+    <div class="mt-6 bg-brand-card border border-brand-cardBorder rounded-2xl p-6">
       <div class="flex items-center justify-between mb-3">
         <h4 class="text-sm font-bold text-slate-300 flex items-center">
           <i class="fa-solid fa-terminal text-solana-green mr-2"></i> Live Console Output Log
@@ -268,7 +297,7 @@
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p>© 2026 Learning Lions Ecosystem. Open-source training initiative.</p>
       <div class="flex space-x-6">
-        <a href="https://github.com" target="_blank" class="hover:text-slate-300 transition">GitHub Repository</a>
+        <a href="https://github.com/oloh-arch/leap-token" target="_blank" class="hover:text-slate-300 transition">GitHub Repository</a>
         <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" class="hover:text-slate-300 transition">Solana Devnet Explorer</a>
       </div>
     </div>
@@ -276,6 +305,10 @@
 
   <!-- ================= WEB3 SCRIPT LOGIC ================= -->
   <script>
+    // Hardcoded Official Addresses
+    const OFFICIAL_MINT_ADDRESS = "4s9F87xmSrqus4V2aNyNQa6GwXGYNSwnCcGtBtA1fNGa";
+    const OFFICIAL_ADMIN_WALLET = "6L9wx7qUgXBjA8JxYfxBU8y39vtYGpwBhDH9ZXFQqzu";
+
     let walletPublicKey = null;
     let localLeapBalance = 0;
     
@@ -406,6 +439,14 @@
       
       document.getElementById('pubKeyDisplay').innerText = pubKey;
       document.getElementById('installNotice').classList.add('hidden');
+
+      // Admin Role Detection
+      if (pubKey === OFFICIAL_ADMIN_WALLET) {
+        document.getElementById('adminPanel').classList.remove('hidden');
+        logMessage('Admin identity verified. Unlocked Trainer Allocation Panel.', 'success');
+      } else {
+        document.getElementById('adminPanel').classList.add('hidden');
+      }
     }
 
     // Update UI Elements on Disconnect
@@ -419,6 +460,7 @@
       document.getElementById('pubKeyDisplay').innerText = '--';
       document.getElementById('solBalance').innerText = '0.000 SOL';
       document.getElementById('leapBalance').innerText = '0';
+      document.getElementById('adminPanel').classList.add('hidden');
       localLeapBalance = 0;
     }
 
@@ -432,7 +474,7 @@
       logMessage(`Refreshed current $LEAP token balance: ${localLeapBalance} LEAP`, 'info');
     }
 
-    // Reward Claiming Logic
+    // Trainee Reward Claim Simulation Logic
     function claimReward() {
       if (!walletPublicKey) {
         logMessage('Please connect your Phantom Wallet to claim rewards.', 'warn');
@@ -446,6 +488,23 @@
 
       logMessage(`Claimed ${rewardAmount} $LEAP tokens for module completion!`, 'success');
       logMessage(`New wallet balance: ${localLeapBalance} $LEAP`, 'info');
+    }
+
+    // Admin Transfer Simulator Logic
+    function adminTransferTokens() {
+      const recipient = document.getElementById('traineeAddressInput').value.trim();
+      const amount = document.getElementById('transferAmountInput').value.trim();
+
+      if (!recipient) {
+        logMessage('Please enter a valid Trainee Solana address.', 'error');
+        return;
+      }
+
+      logMessage(`Initiating transfer of ${amount} $LEAP to recipient ${recipient}...`, 'warn');
+      setTimeout(() => {
+        logMessage(`Successfully allocated ${amount} $LEAP tokens to ${recipient.substring(0,6)}...!`, 'success');
+        document.getElementById('traineeAddressInput').value = '';
+      }, 1200);
     }
 
     // Auto-listen to Provider events
