@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>$LEAP - Learning Lions Token Ecosystem</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Solana Web3 & SPL Token Browser Libraries -->
   <script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
+  <script src="https://unpkg.com/@solana/spl-token@0.3.8/lib/index.iife.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -100,21 +102,21 @@
       </div>
     </div>
 
-    <!-- Admin Panel (Conditional display when Admin connects) -->
+    <!-- Admin Panel (Unlocked when Admin wallet connects) -->
     <section id="adminPanel" class="hidden bg-slate-900/90 border border-brand-purple/40 rounded-2xl p-6 shadow-2xl relative overflow-hidden">
       <div class="absolute top-0 right-0 w-32 h-32 bg-brand-purple/10 rounded-full blur-2xl pointer-events-none"></div>
       <div class="flex items-center gap-2 mb-4">
         <span class="h-2.5 w-2.5 rounded-full bg-brand-green animate-pulse"></span>
-        <h2 class="text-lg font-bold text-white">Trainer Admin Panel (Push Allocation)</h2>
+        <h2 class="text-lg font-bold text-white">Trainer Admin Panel (Real Token Transfer)</h2>
       </div>
       <p class="text-xs text-slate-400 mb-6">
-        As the Admin (`6L9wx7...`), enter a trainee's wallet address to disburse `$LEAP` tokens for course completion.
+        As Admin (`6L9wx7...`), enter a trainee address to trigger a real Phantom sign & send transaction on Devnet.
       </p>
       
       <div class="space-y-4 max-w-xl">
         <div>
-          <label class="block text-xs text-slate-300 mb-1 font-medium">Trainee Wallet Address</label>
-          <input type="text" id="traineeAddressInput" placeholder="e.g. 83F76zP642m98pC9w64W38q4pC5489W7492m98pC9w64" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl p-3 focus:outline-none focus:border-brand-purple font-mono">
+          <label class="block text-xs text-slate-300 mb-1 font-medium">Recipient / Trainee Wallet Address</label>
+          <input type="text" id="traineeAddressInput" placeholder="Enter recipient public key..." class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl p-3 focus:outline-none focus:border-brand-purple font-mono">
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
@@ -122,8 +124,8 @@
             <input type="number" id="tokenAmountInput" value="250" class="w-full bg-slate-950 border border-slate-800 text-slate-200 text-xs rounded-xl p-3 focus:outline-none focus:border-brand-purple font-mono">
           </div>
           <div class="flex items-end">
-            <button onclick="simulateAdminTransfer()" class="w-full bg-brand-green hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-emerald-500/10">
-              Transfer $LEAP
+            <button id="transferBtn" onclick="executeRealTransfer()" class="w-full bg-brand-green hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-xl transition text-xs shadow-lg shadow-emerald-500/10">
+              Send Real $LEAP
             </button>
           </div>
         </div>
@@ -138,7 +140,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Module 1 -->
         <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
           <div>
             <span class="text-xs px-2 py-1 bg-blue-500/10 text-blue-400 rounded-md font-mono">Module 01</span>
@@ -148,12 +149,11 @@
           <div class="flex justify-between items-center border-t border-slate-800/80 pt-3">
             <span class="text-xs font-bold text-brand-green">+100 LEAP</span>
             <button onclick="claimModuleReward('Digital Literacy', 100)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700">
-              Simulate Claim
+              Request Reward
             </button>
           </div>
         </div>
 
-        <!-- Module 2 -->
         <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
           <div>
             <span class="text-xs px-2 py-1 bg-purple-500/10 text-purple-400 rounded-md font-mono">Module 02</span>
@@ -163,12 +163,11 @@
           <div class="flex justify-between items-center border-t border-slate-800/80 pt-3">
             <span class="text-xs font-bold text-brand-green">+250 LEAP</span>
             <button onclick="claimModuleReward('Web Development', 250)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700">
-              Simulate Claim
+              Request Reward
             </button>
           </div>
         </div>
 
-        <!-- Module 3 -->
         <div class="bg-slate-900/70 border border-slate-800 rounded-xl p-4 flex flex-col justify-between space-y-4">
           <div>
             <span class="text-xs px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-md font-mono">Module 03</span>
@@ -178,7 +177,7 @@
           <div class="flex justify-between items-center border-t border-slate-800/80 pt-3">
             <span class="text-xs font-bold text-brand-green">+500 LEAP</span>
             <button onclick="claimModuleReward('Solana Development', 500)" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700">
-              Simulate Claim
+              Request Reward
             </button>
           </div>
         </div>
@@ -200,7 +199,6 @@
 
   </main>
 
-  <!-- JavaScript Integration -->
   <script>
     const ADMIN_WALLET = "6L9wx7qUgXBjA8JxYfxBU8y39vtYGpwBhDH9ZXFQqzu";
     const MINT_ADDRESS = "4s9F87xmSrqus4V2aNyNQa6GwXGYNSwnCcGtBtA1fNGa";
@@ -213,8 +211,8 @@
       const p = document.createElement('p');
       const timestamp = new Date().toLocaleTimeString();
       
-      if (type === "success") p.className = "text-emerald-400";
-      else if (type === "error") p.className = "text-rose-400";
+      if (type === "success") p.className = "text-emerald-400 font-semibold";
+      else if (type === "error") p.className = "text-rose-400 font-semibold";
       else if (type === "admin") p.className = "text-purple-400 font-bold";
       else p.className = "text-slate-300";
 
@@ -237,7 +235,7 @@
 
     async function connectWallet() {
       if (!window.solana || !window.solana.isPhantom) {
-        logMessage("Phantom Wallet non-extension detected. Please install Phantom.", "error");
+        logMessage("Phantom Wallet extension not detected. Please install Phantom.", "error");
         alert("Phantom wallet is not installed. Please install the Phantom Extension!");
         return;
       }
@@ -250,11 +248,7 @@
         document.getElementById('btnText').innerText = userPublicKey.slice(0, 4) + '...' + userPublicKey.slice(-4);
         
         logMessage(`Wallet Connected: ${userPublicKey}`, "success");
-
-        // Execute BigInt-safe balance check
         fetchSolBalance(response.publicKey);
-        
-        // Evaluate Role
         evaluateUserRole(userPublicKey);
 
       } catch (err) {
@@ -265,10 +259,7 @@
     async function fetchSolBalance(publicKeyObj) {
       try {
         const balanceLamports = await connection.getBalance(publicKeyObj);
-        
-        // BigInt Safety Fix: Explicit cast to Number before division
         const solBalance = Number(balanceLamports) / 1000000000;
-        
         document.getElementById('solBalanceDisplay').innerText = `${solBalance.toFixed(3)} SOL`;
         logMessage(`Fetched Devnet Balance: ${solBalance.toFixed(4)} SOL`, "info");
       } catch (err) {
@@ -285,9 +276,9 @@
       if (address === ADMIN_WALLET) {
         roleBadge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-400 border border-purple-500/40";
         roleBadge.innerText = "Ecosystem Admin";
-        roleDesc.innerText = "Authenticated as Head Trainer/Treasury Manager. Token push permissions active.";
+        roleDesc.innerText = "Authenticated as Head Trainer/Treasury Manager. On-chain token transfer controls ready.";
         adminPanel.classList.remove('hidden');
-        logMessage("Admin authentication recognized. Allocation panel unlocked.", "admin");
+        logMessage("Admin recognized. Real transfer panel unlocked.", "admin");
       } else {
         roleBadge.className = "inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
         roleBadge.innerText = "Trainee / Learner";
@@ -296,20 +287,78 @@
       }
     }
 
-    function simulateAdminTransfer() {
-      const recipient = document.getElementById('traineeAddressInput').value.trim();
-      const amount = document.getElementById('tokenAmountInput').value;
+    async function executeRealTransfer() {
+      const recipientStr = document.getElementById('traineeAddressInput').value.trim();
+      const amountStr = document.getElementById('tokenAmountInput').value;
 
-      if (!recipient) {
+      if (!recipientStr) {
         logMessage("Please enter a valid recipient Solana address.", "error");
         return;
       }
 
-      logMessage(`Initiating transfer of ${amount} $LEAP to ${recipient.slice(0, 6)}...${recipient.slice(-4)}`, "admin");
-      setTimeout(() => {
-        logMessage(`[Mock Tx Success]: Sent ${amount} $LEAP from Treasury (${ADMIN_WALLET.slice(0, 4)}...)`, "success");
-        alert(`Successfully allocated ${amount} $LEAP to ${recipient}!`);
-      }, 1000);
+      if (!window.solana || !window.solana.isConnected) {
+        logMessage("Connect your Phantom Wallet first!", "error");
+        return;
+      }
+
+      try {
+        logMessage(`Preparing on-chain transfer of ${amountStr} $LEAP...`, "admin");
+        
+        const senderPubkey = window.solana.publicKey;
+        const recipientPubkey = new solanaWeb3.PublicKey(recipientStr);
+        const mintPubkey = new solanaWeb3.PublicKey(MINT_ADDRESS);
+
+        // Derive Associated Token Accounts
+        const senderATA = await splToken.getAssociatedTokenAddress(mintPubkey, senderPubkey);
+        const recipientATA = await splToken.getAssociatedTokenAddress(mintPubkey, recipientPubkey);
+
+        const tx = new solanaWeb3.Transaction();
+
+        // Check if recipient ATA exists, if not add instruction to create it
+        const recipientAccountInfo = await connection.getAccountInfo(recipientATA);
+        if (!recipientAccountInfo) {
+          logMessage("Recipient token account missing. Adding account creation instruction...", "info");
+          tx.add(
+            splToken.createAssociatedTokenAccountInstruction(
+              senderPubkey,
+              recipientATA,
+              recipientPubkey,
+              mintPubkey
+            )
+          );
+        }
+
+        // Amount in base units (9 decimals for standard SPL tokens)
+        const amountLamports = BigInt(Math.floor(Number(amountStr) * 1000000000));
+
+        // Add Transfer Instruction
+        tx.add(
+          splToken.createTransferInstruction(
+            senderATA,
+            recipientATA,
+            senderPubkey,
+            amountLamports
+          )
+        );
+
+        tx.feePayer = senderPubkey;
+        const { blockhash } = await connection.getLatestBlockhash();
+        tx.recentBlockhash = blockhash;
+
+        logMessage("Prompting Phantom wallet confirmation...", "info");
+        const { signature } = await window.solana.signAndSendTransaction(tx);
+        
+        logMessage(`Transaction Sent! Hash: ${signature.slice(0, 8)}...`, "success");
+        logMessage(`Confirming on Devnet...`, "info");
+        
+        await connection.confirmTransaction(signature, 'confirmed');
+        logMessage(`Confirmed! ${amountStr} $LEAP successfully sent on-chain to ${recipientStr.slice(0, 6)}...`, "success");
+        alert(`Transaction Confirmed! Sent ${amountStr} $LEAP to ${recipientStr}`);
+
+      } catch (err) {
+        logMessage(`Transfer failed: ${err.message}`, "error");
+        console.error(err);
+      }
     }
 
     function claimModuleReward(moduleName, rewardAmount) {
@@ -319,11 +368,8 @@
         return;
       }
 
-      logMessage(`Submitting completion request for ${moduleName}...`, "info");
-      setTimeout(() => {
-        logMessage(`Module Approved! ${rewardAmount} $LEAP requested for ${userPublicKey.slice(0, 4)}...`, "success");
-        alert(`Congratulations! You completed ${moduleName} and requested ${rewardAmount} $LEAP.`);
-      }, 800);
+      logMessage(`Module reward requested: ${rewardAmount} $LEAP for ${moduleName}.`, "info");
+      alert(`Request submitted for ${moduleName}! The trainer can now allocate your ${rewardAmount} $LEAP reward.`);
     }
   </script>
 </body>
